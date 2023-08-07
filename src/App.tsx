@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// React から useState フックをインポート
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+type Memo = {
+  value: string;
+  readonly id: number;
+};
+
+export const App = () => {
+  const [text, setText] = useState("");
+  const [memos, setMemos] = useState<Memo[]>([]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!text) return;
+
+    const newMemo: Memo = {
+      value: text,
+      id: new Date().getTime(),
+    };
+
+    setMemos((memos) => [newMemo, ...memos]);
+    setText("");
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <input type="text" value={text} onChange={(e) => handleChange(e)} />
+        <input type="submit" value="追加" onSubmit={handleSubmit} />
+      </form>
+      <ul>
+        {memos.map((memo) => {
+          return <li key={memo.id}>{memo.value}</li>
+        })}
+      </ul>
+    </div>
+  );
+};
