@@ -1,4 +1,3 @@
-// React から useState フックをインポート
 import { useState } from "react";
 
 type Memo = {
