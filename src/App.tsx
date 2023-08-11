@@ -3,6 +3,7 @@ import { useState } from "react";
 type Memo = {
   value: string;
   readonly id: number;
+  archived: boolean;
 };
 
 export const App = () => {
@@ -19,6 +20,7 @@ export const App = () => {
     const newMemo: Memo = {
       value: text,
       id: new Date().getTime(),
+      archived: false,
     };
 
     setMemos((memos) => [newMemo, ...memos]);
@@ -30,6 +32,19 @@ export const App = () => {
       const newMemos = memos.map((memo) => {
         if (memo.id === id) {
           return { ...memo, value: value };
+        }
+        return memo;
+      });
+
+      return newMemos;
+    });
+  };
+
+  const handleArchive = (id: number, archived: boolean) => {
+    setMemos((memos) => {
+      const newMemos = memos.map((memo) => {
+        if (memo.id === id) {
+          return { ...memo, archived };
         }
         return memo;
       });
@@ -53,6 +68,11 @@ export const App = () => {
         {memos.map((memo) => {
           return (
             <li key={memo.id}>
+              <input
+                type="checkbox"
+                checked={memo.archived}
+                onChange={() => handleArchive(memo.id, !memo.archived)}
+              />
               <input
                 type="text"
                 value={memo.value}
