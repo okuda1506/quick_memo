@@ -25,6 +25,19 @@ export const App = () => {
     setText("");
   };
 
+  const handleEdit = (id: number, value: string) => {
+    setMemos((memos) => {
+      const newMemos = memos.map((memo) => {
+        if (memo.id === id) {
+          return { ...memo, value: value };
+        }
+        return memo;
+      });
+
+      return newMemos;
+    });
+  };
+
   return (
     <div>
       <form
@@ -38,7 +51,15 @@ export const App = () => {
       </form>
       <ul>
         {memos.map((memo) => {
-          return <li key={memo.id}>{memo.value}</li>
+          return (
+            <li key={memo.id}>
+              <input
+                type="text"
+                value={memo.value}
+                onChange={(e) => handleEdit(memo.id, e.target.value)}
+              />
+            </li>
+          );
         })}
       </ul>
     </div>
