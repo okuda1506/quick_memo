@@ -75,11 +75,15 @@ export const App = () => {
     setFilter(filter);
   };
 
+  const handleEmpty = () => {
+    setMemos((memos) => memos.filter((memo) => !memo.removed));
+  };
+
   const filteredMemos = memos.filter((memo) => {
     switch (filter) {
-      case 'memo':
+      case "memo":
         return !memo.archived && !memo.removed;
-      case 'archived':
+      case "archived":
         return memo.archived && !memo.removed;
       case "removed":
         return memo.removed;
@@ -98,15 +102,26 @@ export const App = () => {
         <option value="archived">アーカイブ</option>
         <option value="removed">ゴミ箱</option>
       </select>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <input type="text" value={text} disabled={filter === 'archived' || filter === 'removed'} onChange={(e) => handleChange(e)} />
-        <input type="submit" value="追加" disabled={filter === 'archived' || filter === 'removed'} onSubmit={handleSubmit} />
-      </form>
+      {filter === "removed" ? (
+        <button
+          onClick={handleEmpty}
+          disabled={memos.filter((memo) => memo.removed).length === 0}
+        >
+          空にする
+        </button>
+      ) : (
+        filter !== "archived" && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <input type="text" value={text} onChange={(e) => handleChange(e)} />
+            <input type="submit" value="追加" onSubmit={handleSubmit} />
+          </form>
+        )
+      )}
       <ul>
         {filteredMemos.map((memo) => {
           return (
