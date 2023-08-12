@@ -4,6 +4,7 @@ type Memo = {
   value: string;
   readonly id: number;
   archived: boolean;
+  removed: boolean;
 };
 
 export const App = () => {
@@ -21,6 +22,7 @@ export const App = () => {
       value: text,
       id: new Date().getTime(),
       archived: false,
+      removed: false,
     };
 
     setMemos((memos) => [newMemo, ...memos]);
@@ -53,6 +55,19 @@ export const App = () => {
     });
   };
 
+  const handleRemove = (id: number, removed: boolean) => {
+    setMemos((memos) => {
+      const newMemos = memos.map((memo) => {
+        if (memo.id === id) {
+          return {...memo, removed};
+        }
+        return memo;
+      });
+
+      return newMemos;
+    });
+  }
+
   return (
     <div>
       <form
@@ -70,14 +85,19 @@ export const App = () => {
             <li key={memo.id}>
               <input
                 type="checkbox"
+                disabled={memo.removed}
                 checked={memo.archived}
                 onChange={() => handleArchive(memo.id, !memo.archived)}
               />
               <input
                 type="text"
+                disabled={memo.removed}
                 value={memo.value}
                 onChange={(e) => handleEdit(memo.id, e.target.value)}
               />
+              <button onClick={() => handleRemove(memo.id, !memo.removed)}>
+                {memo.removed ? '復元' : '削除'}
+              </button>
             </li>
           );
         })}
