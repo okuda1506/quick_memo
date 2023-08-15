@@ -32,39 +32,18 @@ export const App = () => {
     setText("");
   };
 
-  const handleEdit = (id: number, value: string) => {
+  const handleMemo = <K extends keyof Memo, V extends Memo[K]>(
+    id: number,
+    key: K,
+    value: V
+  ) => {
     setMemos((memos) => {
       const newMemos = memos.map((memo) => {
         if (memo.id === id) {
-          return { ...memo, value: value };
+          return { ...memo, [key]: value };
+        } else {
+          return memo;
         }
-        return memo;
-      });
-
-      return newMemos;
-    });
-  };
-
-  const handleArchive = (id: number, archived: boolean) => {
-    setMemos((memos) => {
-      const newMemos = memos.map((memo) => {
-        if (memo.id === id) {
-          return { ...memo, archived };
-        }
-        return memo;
-      });
-
-      return newMemos;
-    });
-  };
-
-  const handleRemove = (id: number, removed: boolean) => {
-    setMemos((memos) => {
-      const newMemos = memos.map((memo) => {
-        if (memo.id === id) {
-          return { ...memo, removed };
-        }
-        return memo;
       });
 
       return newMemos;
@@ -130,15 +109,15 @@ export const App = () => {
                 type="checkbox"
                 disabled={memo.removed}
                 checked={memo.archived}
-                onChange={() => handleArchive(memo.id, !memo.archived)}
+                onChange={() => handleMemo(memo.id, 'archived', !memo.archived)}
               />
               <input
                 type="text"
                 disabled={memo.removed}
                 value={memo.value}
-                onChange={(e) => handleEdit(memo.id, e.target.value)}
+                onChange={(e) => handleMemo(memo.id, 'value', e.target.value)}
               />
-              <button onClick={() => handleRemove(memo.id, !memo.removed)}>
+              <button onClick={() => handleMemo(memo.id, 'removed', !memo.removed)}>
                 {memo.removed ? "復元" : "削除"}
               </button>
             </li>
